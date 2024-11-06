@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "@tanstack/react-router": "^1.76.1",
+    "bootstrap": "^5.3.3",
+    "react-bootstrap": "^2.10.5",
+    "react-redux": "^9.1.2"
+  },
+  "devDependencies": {
+    "@tanstack/router-devtools": "^1.76.1",
+    "@tanstack/router-plugin": "^1.76.0"
+  }
+}
