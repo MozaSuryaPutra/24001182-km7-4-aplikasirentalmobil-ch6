@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { getType } from "../../service/carType";
+
 import TypeTable from "../../components/TypeTable";
+
 export const Route = createLazyFileRoute("/types/")({
   component: Types,
 });
@@ -58,7 +60,9 @@ function Types() {
         <h1>Types data is not found!</h1>
       ) : (
         car_types.map((carType) => (
+
           <TypeTable car_types={carType} key={carType?.id} />
+
         ))
       )}
     </Row>
