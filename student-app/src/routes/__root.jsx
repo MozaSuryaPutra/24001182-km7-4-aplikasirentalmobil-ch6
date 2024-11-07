@@ -6,8 +6,8 @@ import Container from "react-bootstrap/Container";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import NavigationBar from "../components/NavBar";
-import Sidebar from "../components/SideBar";
+import NavigationBar from "../components/NavBar/index.jsx";
+import Sidebar from "../components/SideBar/index.jsx";
 
 const LayoutContainer = styled.div`
   display: flex;
