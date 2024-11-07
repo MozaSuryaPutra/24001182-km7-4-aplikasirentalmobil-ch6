@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { getStudents } from "../service/student";
-import StudentItem from "../components/Student/StudentItem";
+// import StudentItem from "../../components/Student/StudentItem";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
