@@ -1,33 +1,35 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+
 import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { getType } from "../../service/carType";
-import TypeTable from "../../components/TypeTable";
-export const Route = createLazyFileRoute("/types/")({
-  component: Types,
+import { getModels } from "../../service/models";
+import ModelsTable from "../../components/ModelsTable";
+
+export const Route = createLazyFileRoute("/models/")({
+  component: Models,
 });
 
-function Types() {
+function Models() {
   const { token } = useSelector((state) => state.auth);
 
-  const [car_types, setTypes] = useState([]);
+  const [carsModels, setCarsModels] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const getTypesData = async () => {
+    const getCarsModels = async () => {
       setIsLoading(true);
-      const result = await getType();
+      const result = await getModels();
       if (result.success) {
-        setTypes(result.data);
+        setCarsModels(result.data);
       }
       setIsLoading(false);
     };
 
     if (token) {
-      getTypesData();
+      getCarsModels();
     }
   }, [token]);
 
@@ -54,14 +56,14 @@ function Types() {
   return (
     <Row className="mt-4">
       <h1>Selamat Datang Di Website Kelompok 4</h1>
-      {car_types.length === 0 ? (
-        <h1>Types data is not found!</h1>
+      {carsModels.length === 0 ? (
+        <h1>Cars Models is not found!</h1>
       ) : (
-        car_types.map((carType) => (
-          <TypeTable
-            setTypes={setTypes}
-            car_types={carType}
-            key={carType?.id}
+        carsModels.map((carModel) => (
+          <ModelsTable
+            setCarsModels={setCarsModels}
+            carsModels={carModel}
+            key={carModel?.id}
           />
         ))
       )}

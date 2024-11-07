@@ -5,7 +5,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { deleteType, getType } from "../../service/carType";
+import { deleteModels, getModels } from "../../service/models";
 
 const TableContainer = styled.div`
   max-width: 100%;
@@ -80,7 +80,7 @@ const EditButton = styled.button`
   font-size: 14px;
 `;
 
-const TypeTable = ({ car_types, setTypes }) => {
+const ModelsTable = ({ carsModels, setCarsModels }) => {
   const navigate = useNavigate();
 
   const onDelete = async (event) => {
@@ -93,15 +93,15 @@ const TypeTable = ({ car_types, setTypes }) => {
         {
           label: "Yes",
           onClick: async () => {
-            const result = await deleteType(car_types.id);
+            const result = await deleteModels(carsModels.id);
             if (result?.success) {
               toast.success("Data deleted successfully!");
 
-              const refreshTypes = await getType();
+              const refreshTypes = await getModels();
               if (refreshTypes?.success) {
-                setTypes(refreshTypes.data);
+                setCarsModels(refreshTypes.data);
               } else {
-                setTypes([]);
+                setCarsModels([]);
               }
 
               return;
@@ -119,7 +119,7 @@ const TypeTable = ({ car_types, setTypes }) => {
   };
 
   const handleEdit = () => {
-    navigate({ to: `/types/${car_types.id}` });
+    navigate({ to: `/models/${carsModels.id}` });
   };
 
   return (
@@ -127,17 +127,33 @@ const TypeTable = ({ car_types, setTypes }) => {
       <StyledTable>
         <TableHead>
           <TableRow>
-            <TableHeaderCell>Body Style</TableHeaderCell>
-            <TableHeaderCell>Capacity</TableHeaderCell>
-            <TableHeaderCell>Fuel Type</TableHeaderCell>
+            <TableHeaderCell>Model Name</TableHeaderCell>
+            <TableHeaderCell>Manufacture</TableHeaderCell>
+            <TableHeaderCell>Transmission</TableHeaderCell>
+            <TableHeaderCell>Type_Id</TableHeaderCell>
+            <TableHeaderCell>Description</TableHeaderCell>
+            <TableHeaderCell>Specs</TableHeaderCell>
+            <TableHeaderCell>Options</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHead>
         <tbody>
           <TableRow>
-            <TableCell>{car_types.body_style}</TableCell>
-            <TableCell>{car_types.capacity} seats</TableCell>
-            <TableCell>{car_types.fuel_type}</TableCell>
+            <TableCell>{carsModels.model_name}</TableCell>
+            <TableCell>{carsModels.manufacturer} seats</TableCell>
+            <TableCell>{carsModels.transmission}</TableCell>
+            <TableCell>{carsModels.type_id}</TableCell>
+            <TableCell>{carsModels.description}</TableCell>
+            <TableCell>
+              {Array.isArray(carsModels.specs)
+                ? carsModels.specs.join(", ")
+                : carsModels.specs}
+            </TableCell>
+            <TableCell>
+              {Array.isArray(carsModels.options)
+                ? carsModels.options.join(", ")
+                : carsModels.options}
+            </TableCell>
             <TableCell>
               <ButtonContainer>
                 <DeleteButton onClick={onDelete}>
@@ -157,4 +173,4 @@ const TypeTable = ({ car_types, setTypes }) => {
   );
 };
 
-export default TypeTable;
+export default ModelsTable;
