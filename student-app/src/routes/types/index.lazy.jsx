@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { getType } from "../../service/carType";
+
 import TypeTable from "../../components/TypeTable";
+
 export const Route = createLazyFileRoute("/types/")({
   component: Types,
 });
