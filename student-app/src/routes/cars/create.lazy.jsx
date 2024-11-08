@@ -49,6 +49,7 @@ function CreateCars() {
       toast.error("Please fill in all required fields!");
       return;
     }
+
     if (rentPerDay <= 0) {
       toast.error("Rent Per Day harus lebih dari 0");
       return;
@@ -62,6 +63,7 @@ function CreateCars() {
       toast.error("Year must more than 1886");
       return;
     }
+
 
     const request = {
       plate,

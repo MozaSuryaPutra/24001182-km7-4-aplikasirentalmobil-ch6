@@ -132,10 +132,12 @@ const CarCard = ({ cars, setCars }) => {
       <CardBody>
         {/* Gunakan model_name dari models yang dikirim */}
         <CardTitle>{cars.carsModels.model_name}</CardTitle>
+
         <CardText>RP {cars.rentPerDay}/Hari</CardText>
         <CardText>Available At: {formattedAvailableAt}</CardText>
         <CardText>Year: {cars.year}</CardText>
         <CardText>Plate: {cars.plate}</CardText>
+
         <ButtonContainer>
           <DeleteButton onClick={onDelete}>
             <FaTrashAlt style={{ marginRight: "4px" }} />
