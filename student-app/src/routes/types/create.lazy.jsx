@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { createType } from "../../service/carType";
-
+import { toast } from "react-toastify";
 export const Route = createLazyFileRoute("/types/create")({
   component: CreateTypes,
 });
@@ -19,6 +19,11 @@ function CreateTypes() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+
+    if (capacity <= 0) {
+      toast.error("Capacity harus lebih dari 0");
+      return;
+    }
 
     // Call createStudent function with form data
     const result = await createType({
@@ -64,7 +69,7 @@ function CreateTypes() {
                 </Form.Label>
                 <Col sm="9">
                   <Form.Control
-                    type="text"
+                    type="number"
                     placeholder="Capacity"
                     required
                     value={capacity}
