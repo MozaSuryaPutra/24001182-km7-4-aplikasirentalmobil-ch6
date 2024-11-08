@@ -119,7 +119,7 @@ const ModelsTable = ({ carsModels, setCarsModels }) => {
   };
 
   const handleEdit = () => {
-    navigate({ to: `/models/${carsModels.id}` });
+    navigate({ to: `/models/edit/${carsModels.id}` });
   };
 
   return (
@@ -145,14 +145,26 @@ const ModelsTable = ({ carsModels, setCarsModels }) => {
             <TableCell>{carsModels.type_id}</TableCell>
             <TableCell>{carsModels.description}</TableCell>
             <TableCell>
-              {Array.isArray(carsModels.specs)
-                ? carsModels.specs.join(", ")
-                : carsModels.specs}
+              {Array.isArray(carsModels.specs) ? (
+                <div style={{ textAlign: "left" }}>
+                  {carsModels.specs.map((spec, index) => (
+                    <div key={index}>- {spec}</div>
+                  ))}
+                </div>
+              ) : (
+                carsModels.specs
+              )}
             </TableCell>
             <TableCell>
-              {Array.isArray(carsModels.options)
-                ? carsModels.options.join(", ")
-                : carsModels.options}
+              {Array.isArray(carsModels.options) ? (
+                <div style={{ textAlign: "left" }}>
+                  {carsModels.options.map((option, index) => (
+                    <div key={index}>- {option}</div>
+                  ))}
+                </div>
+              ) : (
+                carsModels.options
+              )}
             </TableCell>
             <TableCell>
               <ButtonContainer>

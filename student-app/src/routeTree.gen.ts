@@ -29,6 +29,7 @@ const StudentsIdLazyImport = createFileRoute('/students/$id')()
 const ModelsCreateLazyImport = createFileRoute('/models/create')()
 const TypesEditIdLazyImport = createFileRoute('/types/edit/$id')()
 const StudentsEditIdLazyImport = createFileRoute('/students/edit/$id')()
+const ModelsEditIdLazyImport = createFileRoute('/models/edit/$id')()
 
 // Create/Update Routes
 
@@ -116,6 +117,14 @@ const StudentsEditIdLazyRoute = StudentsEditIdLazyImport.update({
   import('./routes/students/edit/$id.lazy').then((d) => d.Route),
 )
 
+const ModelsEditIdLazyRoute = ModelsEditIdLazyImport.update({
+  id: '/models/edit/$id',
+  path: '/models/edit/$id',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/models/edit/$id.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -197,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TypesIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/models/edit/$id': {
+      id: '/models/edit/$id'
+      path: '/models/edit/$id'
+      fullPath: '/models/edit/$id'
+      preLoaderRoute: typeof ModelsEditIdLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/students/edit/$id': {
       id: '/students/edit/$id'
       path: '/students/edit/$id'
@@ -228,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/cars': typeof CarsIndexLazyRoute
   '/models': typeof ModelsIndexLazyRoute
   '/types': typeof TypesIndexLazyRoute
+  '/models/edit/$id': typeof ModelsEditIdLazyRoute
   '/students/edit/$id': typeof StudentsEditIdLazyRoute
   '/types/edit/$id': typeof TypesEditIdLazyRoute
 }
@@ -244,6 +261,7 @@ export interface FileRoutesByTo {
   '/cars': typeof CarsIndexLazyRoute
   '/models': typeof ModelsIndexLazyRoute
   '/types': typeof TypesIndexLazyRoute
+  '/models/edit/$id': typeof ModelsEditIdLazyRoute
   '/students/edit/$id': typeof StudentsEditIdLazyRoute
   '/types/edit/$id': typeof TypesEditIdLazyRoute
 }
@@ -261,6 +279,7 @@ export interface FileRoutesById {
   '/cars/': typeof CarsIndexLazyRoute
   '/models/': typeof ModelsIndexLazyRoute
   '/types/': typeof TypesIndexLazyRoute
+  '/models/edit/$id': typeof ModelsEditIdLazyRoute
   '/students/edit/$id': typeof StudentsEditIdLazyRoute
   '/types/edit/$id': typeof TypesEditIdLazyRoute
 }
@@ -279,6 +298,7 @@ export interface FileRouteTypes {
     | '/cars'
     | '/models'
     | '/types'
+    | '/models/edit/$id'
     | '/students/edit/$id'
     | '/types/edit/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -294,6 +314,7 @@ export interface FileRouteTypes {
     | '/cars'
     | '/models'
     | '/types'
+    | '/models/edit/$id'
     | '/students/edit/$id'
     | '/types/edit/$id'
   id:
@@ -309,6 +330,7 @@ export interface FileRouteTypes {
     | '/cars/'
     | '/models/'
     | '/types/'
+    | '/models/edit/$id'
     | '/students/edit/$id'
     | '/types/edit/$id'
   fileRoutesById: FileRoutesById
@@ -326,6 +348,7 @@ export interface RootRouteChildren {
   CarsIndexLazyRoute: typeof CarsIndexLazyRoute
   ModelsIndexLazyRoute: typeof ModelsIndexLazyRoute
   TypesIndexLazyRoute: typeof TypesIndexLazyRoute
+  ModelsEditIdLazyRoute: typeof ModelsEditIdLazyRoute
   StudentsEditIdLazyRoute: typeof StudentsEditIdLazyRoute
   TypesEditIdLazyRoute: typeof TypesEditIdLazyRoute
 }
@@ -342,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   CarsIndexLazyRoute: CarsIndexLazyRoute,
   ModelsIndexLazyRoute: ModelsIndexLazyRoute,
   TypesIndexLazyRoute: TypesIndexLazyRoute,
+  ModelsEditIdLazyRoute: ModelsEditIdLazyRoute,
   StudentsEditIdLazyRoute: StudentsEditIdLazyRoute,
   TypesEditIdLazyRoute: TypesEditIdLazyRoute,
 }
@@ -369,6 +393,7 @@ export const routeTree = rootRoute
         "/cars/",
         "/models/",
         "/types/",
+        "/models/edit/$id",
         "/students/edit/$id",
         "/types/edit/$id"
       ]
@@ -405,6 +430,9 @@ export const routeTree = rootRoute
     },
     "/types/": {
       "filePath": "types/index.lazy.jsx"
+    },
+    "/models/edit/$id": {
+      "filePath": "models/edit/$id.lazy.jsx"
     },
     "/students/edit/$id": {
       "filePath": "students/edit/$id.lazy.jsx"

@@ -93,7 +93,7 @@ function CreateTypes() {
 
               <div className="d-grid gap-2">
                 <Button type="submit" variant="primary">
-                  Create Student
+                  Create Type
                 </Button>
               </div>
             </Form>

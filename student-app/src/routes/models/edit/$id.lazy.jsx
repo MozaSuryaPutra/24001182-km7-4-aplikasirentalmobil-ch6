@@ -5,15 +5,16 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { getType } from "../../service/carType";
-import { createModels } from "../../service/models";
+import { getType } from "../../../service/carType";
+import { getModelsById, updateModels } from "../../../service/models";
 
-export const Route = createLazyFileRoute("/models/create")({
-  component: CreateModel,
+export const Route = createLazyFileRoute("/models/edit/$id")({
+  component: EditModel,
 });
 
-function CreateModel() {
+function EditModel() {
   const navigate = useNavigate();
+  const { id } = Route.useParams();
   const [modelName, setModelName] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [transmission, setTransmission] = useState("");
@@ -24,15 +25,32 @@ function CreateModel() {
   const [type_id, setTypeId] = useState(0);
 
   useEffect(() => {
+    // Fetch model data to edit
+    const fetchModelData = async () => {
+      const result = await getModelsById(id);
+      if (result?.success) {
+        setModelName(result.data.model_name);
+        setManufacturer(result.data.manufacturer);
+        setTransmission(result.data.transmission);
+        setDescription(result.data.description);
+        setSpecs(result.data.specs || [""]);
+        setOptions(result.data.options || [""]);
+        setTypeId(result.data.type_id);
+      } else {
+        navigate({ to: `/models` });
+      }
+      console.log(result);
+    };
+    // Fetch types for dropdown selection
     const getTypeData = async () => {
       const result = await getType();
       if (result?.success) {
         setType(result?.data);
       }
     };
-
+    fetchModelData();
     getTypeData();
-  }, []);
+  }, [id]);
 
   // Add new empty spec and option
   const addSpecValue = () => setSpecs([...specs, ""]);
@@ -75,7 +93,7 @@ function CreateModel() {
       return;
     }
 
-    const result = await createModels({
+    const result = await updateModels(id, {
       model_name: modelName,
       manufacturer: manufacturer,
       transmission: transmission,
@@ -86,10 +104,10 @@ function CreateModel() {
     });
 
     if (result.success) {
-      alert("Model created successfully!");
+      alert("Model updated successfully!");
       navigate({ to: `/models` });
     } else {
-      alert("Failed to create model.");
+      alert("Failed to update model.");
     }
   };
 
@@ -97,7 +115,7 @@ function CreateModel() {
     <Row className="mt-5">
       <Col className="offset-md-3">
         <Card>
-          <Card.Header className="text-center">Create Model</Card.Header>
+          <Card.Header className="text-center">Edit Model</Card.Header>
           <Card.Body>
             <Form onSubmit={onSubmit}>
               <Form.Group as={Row} className="mb-3" controlId="model_name">
@@ -153,9 +171,10 @@ function CreateModel() {
                   <Form.Select
                     aria-label="Select Type"
                     required
-                    onChange={(e) => setTypeId(Number(e.target.value))}
+                    value={type_id}
+                    onChange={(e) => setTypeId(e.target.value)}
                   >
-                    <option disabled selected value="">
+                    <option disabled value="">
                       Select Type
                     </option>
                     {type.map((t) => (
@@ -237,7 +256,7 @@ function CreateModel() {
 
               <div className="d-grid gap-2">
                 <Button type="submit" variant="primary">
-                  Create Model
+                  Update Model
                 </Button>
               </div>
             </Form>
@@ -248,4 +267,4 @@ function CreateModel() {
   );
 }
 
-export default CreateModel;
+export default EditModel;

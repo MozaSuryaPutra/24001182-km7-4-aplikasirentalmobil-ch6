@@ -127,6 +127,7 @@ const TypeTable = ({ car_types, setTypes }) => {
       <StyledTable>
         <TableHead>
           <TableRow>
+            <TableHeaderCell>Id</TableHeaderCell>
             <TableHeaderCell>Body Style</TableHeaderCell>
             <TableHeaderCell>Capacity</TableHeaderCell>
             <TableHeaderCell>Fuel Type</TableHeaderCell>
@@ -135,6 +136,7 @@ const TypeTable = ({ car_types, setTypes }) => {
         </TableHead>
         <tbody>
           <TableRow>
+            <TableCell>{car_types.id}</TableCell>
             <TableCell>{car_types.body_style}</TableCell>
             <TableCell>{car_types.capacity} seats</TableCell>
             <TableCell>{car_types.fuel_type}</TableCell>
