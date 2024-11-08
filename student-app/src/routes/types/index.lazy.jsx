@@ -60,11 +60,13 @@ function Types() {
         <h1>Types data is not found!</h1>
       ) : (
         car_types.map((carType) => (
+
           <TypeTable
             setTypes={setTypes}
             car_types={carType}
             key={carType?.id}
           />
+
         ))
       )}
     </Row>
