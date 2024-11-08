@@ -70,13 +70,34 @@ function EditCars() {
   const onSubmit = async (event) => {
     event.preventDefault()
 
+    console.log('modelsId:', modelsId)
+    console.log('rentPerDay:', rentPerDay)
+    console.log('year:', year)
+    console.log('plate:', plate)
+    console.log('availableAt:', availableAt)
+
+    if (rentPerDay <= 0) {
+      toast.error('Rent Per Day harus lebih dari 0')
+      return
+    }
+    const platePattern = /^[A-Z]{3}-\d{4}$/
+    if (!platePattern.test(plate)) {
+      toast.error("Plate must be in the format 'ABC-1234'")
+      return
+    }
+    if (year <= 1886 && year <= 0) {
+      toast.error('Year must more than 1886')
+      return
+    }
+
     const result = await updateCars(id, {
       plate,
+      rentPerDay: parseInt(rentPerDay, 10), // Ensure rentPerDay is an integer
+      year: parseInt(year, 10), // Ensure year is an integer
+      availableAt,
+      available,
       carsmodels_id: modelsId,
-      rentPerDay: rentPerDay,
-      availableAt: availableAt,
-      year: year,
-      image: image,
+      image: image ? image : null, // If no image, set to null
     })
 
     if (result.success) {
@@ -121,7 +142,7 @@ function EditCars() {
                     onChange={(event) => setModelsId(event.target.value)}
                   >
                     <option disabled value="">
-                      Select Model
+                      Select Car Model
                     </option>
                     {models &&
                       models.length > 0 &&
@@ -134,17 +155,52 @@ function EditCars() {
                 </Col>
               </Form.Group>
 
+              <Form.Group as={Row} className="mb-3" controlId="available">
+                <Form.Label column sm={3}>
+                  Available
+                </Form.Label>
+                <Col sm="9">
+                  <Form.Select
+                    value={available ? 'true' : 'false'}
+                    onChange={(event) =>
+                      setAvailable(event.target.value === 'true')
+                    }
+                    required
+                  >
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
+                  </Form.Select>
+                </Col>
+              </Form.Group>
+
+              {/* Rent per Day Field */}
               <Form.Group as={Row} className="mb-3" controlId="rentPerDay">
                 <Form.Label column sm={3}>
-                  Rent Per Day
+                  Rent per Day
                 </Form.Label>
                 <Col sm="9">
                   <Form.Control
-                    type="text"
-                    placeholder="Rent Prices"
+                    type="number"
+                    placeholder="Rent per Day"
                     required
                     value={rentPerDay}
-                    onChange={(e) => setRentPerDay(e.target.value)}
+                    onChange={(event) => setRentPerDay(event.target.value)}
+                  />
+                </Col>
+              </Form.Group>
+
+              {/* Year Field */}
+              <Form.Group as={Row} className="mb-3" controlId="year">
+                <Form.Label column sm={3}>
+                  Year
+                </Form.Label>
+                <Col sm="9">
+                  <Form.Control
+                    type="number"
+                    placeholder="Year"
+                    required
+                    value={year}
+                    onChange={(event) => setYear(event.target.value)}
                   />
                 </Col>
               </Form.Group>
