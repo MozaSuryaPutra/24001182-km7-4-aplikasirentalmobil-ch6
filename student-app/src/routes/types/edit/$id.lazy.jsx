@@ -1,44 +1,53 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
-import { getTypeById, updateType } from "../../../service/carType";
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Image from 'react-bootstrap/Image'
+import { getTypeById, updateType } from '../../../service/carType'
+import { toast } from 'react-toastify'
+import Protected from '../../../components/Auth/Protected'
 
-import { toast } from "react-toastify";
-
-export const Route = createLazyFileRoute("/types/edit/$id")({
-  component: EditTypes,
-});
+export const Route = createLazyFileRoute('/types/edit/$id')({
+  component: () => (
+    <Protected roles={[1]}>
+      <EditTypes />
+    </Protected>
+  ),
+})
 
 function EditTypes() {
-  const navigate = useNavigate();
-  const { id } = Route.useParams();
-  const [body_style, setBodyStyle] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [fuel_type, setFuelType] = useState("");
+  const navigate = useNavigate()
+  const { id } = Route.useParams()
+  const [body_style, setBodyStyle] = useState('')
+  const [capacity, setCapacity] = useState('')
+  const [fuel_type, setFuelType] = useState('')
 
   useEffect(() => {
     const fetchTypesData = async () => {
-      const type = await getTypeById(id);
+      const type = await getTypeById(id)
       if (!type?.success) {
-        navigate({ to: "/types" });
+        navigate({ to: '/types' })
       }
       if (type?.success) {
-        setBodyStyle(type.data.body_style);
-        setCapacity(type.data.capacity);
-        setFuelType(type.data.fuel_type);
+        setBodyStyle(type.data.body_style)
+        setCapacity(type.data.capacity)
+        setFuelType(type.data.fuel_type)
       }
-    };
+    }
 
-    fetchTypesData();
-  }, [id, navigate]);
+    fetchTypesData()
+  }, [id, navigate])
 
   const onSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
+
+    if (capacity <= 0) {
+      toast.error('Capacity harus lebih dari 0')
+      return
+    }
 
     if (capacity <= 0) {
       toast.error("Capacity harus lebih dari 0");
@@ -50,15 +59,15 @@ function EditTypes() {
       body_style: body_style,
       capacity: capacity,
       fuel_type: fuel_type,
-    });
+    })
 
     if (result.success) {
-      alert("Types updated successfully!");
-      navigate({ to: `/types` });
+      alert('Types updated successfully!')
+      navigate({ to: `/types` })
     } else {
-      alert("Failed to update Types.");
+      alert('Failed to update Types.')
     }
-  };
+  }
 
   return (
     <Row className="mt-5">
@@ -78,7 +87,7 @@ function EditTypes() {
                     required
                     value={body_style}
                     onChange={(event) => {
-                      setBodyStyle(event.target.value);
+                      setBodyStyle(event.target.value)
                     }}
                   />
                 </Col>
@@ -89,14 +98,12 @@ function EditTypes() {
                 </Form.Label>
                 <Col sm="9">
                   <Form.Control
-
                     type="number"
-
                     placeholder="Capacity"
                     required
                     value={capacity}
                     onChange={(event) => {
-                      setCapacity(event.target.value);
+                      setCapacity(event.target.value)
                     }}
                   />
                 </Col>
@@ -112,7 +119,7 @@ function EditTypes() {
                     required
                     value={fuel_type}
                     onChange={(event) => {
-                      setFuelType(event.target.value);
+                      setFuelType(event.target.value)
                     }}
                   />
                 </Col>
@@ -129,5 +136,5 @@ function EditTypes() {
       </Col>
       <Col md={3}></Col>
     </Row>
-  );
+  )
 }
