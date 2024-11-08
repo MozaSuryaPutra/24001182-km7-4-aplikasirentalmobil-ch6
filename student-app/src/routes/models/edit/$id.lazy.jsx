@@ -1,96 +1,101 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { getType } from "../../../service/carType";
-import { getModelsById, updateModels } from "../../../service/models";
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import { getType } from '../../../service/carType'
+import { getModelsById, updateModels } from '../../../service/models'
+import Protected from '../../../components/Auth/Protected'
 
-export const Route = createLazyFileRoute("/models/edit/$id")({
-  component: EditModel,
-});
+export const Route = createLazyFileRoute('/models/edit/$id')({
+  component: () => (
+    <Protected roles={[1]}>
+      <EditModel />
+    </Protected>
+  ),
+})
 
 function EditModel() {
-  const navigate = useNavigate();
-  const { id } = Route.useParams();
-  const [modelName, setModelName] = useState("");
-  const [manufacturer, setManufacturer] = useState("");
-  const [transmission, setTransmission] = useState("");
-  const [description, setDescription] = useState("");
-  const [specs, setSpecs] = useState([""]);
-  const [options, setOptions] = useState([""]);
-  const [type, setType] = useState([]);
-  const [type_id, setTypeId] = useState(0);
+  const navigate = useNavigate()
+  const { id } = Route.useParams()
+  const [modelName, setModelName] = useState('')
+  const [manufacturer, setManufacturer] = useState('')
+  const [transmission, setTransmission] = useState('')
+  const [description, setDescription] = useState('')
+  const [specs, setSpecs] = useState([''])
+  const [options, setOptions] = useState([''])
+  const [type, setType] = useState([])
+  const [type_id, setTypeId] = useState(0)
 
   useEffect(() => {
     // Fetch model data to edit
     const fetchModelData = async () => {
-      const result = await getModelsById(id);
+      const result = await getModelsById(id)
       if (result?.success) {
-        setModelName(result.data.model_name);
-        setManufacturer(result.data.manufacturer);
-        setTransmission(result.data.transmission);
-        setDescription(result.data.description);
-        setSpecs(result.data.specs || [""]);
-        setOptions(result.data.options || [""]);
-        setTypeId(result.data.type_id);
+        setModelName(result.data.model_name)
+        setManufacturer(result.data.manufacturer)
+        setTransmission(result.data.transmission)
+        setDescription(result.data.description)
+        setSpecs(result.data.specs || [''])
+        setOptions(result.data.options || [''])
+        setTypeId(result.data.type_id)
       } else {
-        navigate({ to: `/models` });
+        navigate({ to: `/models` })
       }
-      console.log(result);
-    };
+      console.log(result)
+    }
     // Fetch types for dropdown selection
     const getTypeData = async () => {
-      const result = await getType();
+      const result = await getType()
       if (result?.success) {
-        setType(result?.data);
+        setType(result?.data)
       }
-    };
-    fetchModelData();
-    getTypeData();
-  }, [id]);
+    }
+    fetchModelData()
+    getTypeData()
+  }, [id])
 
   // Add new empty spec and option
-  const addSpecValue = () => setSpecs([...specs, ""]);
-  const addOptionValue = () => setOptions([...options, ""]);
+  const addSpecValue = () => setSpecs([...specs, ''])
+  const addOptionValue = () => setOptions([...options, ''])
 
   // Remove spec or option by index
   const removeSpecValue = (index) => {
-    const updatedSpecs = specs.filter((_, i) => i !== index);
-    setSpecs(updatedSpecs);
-  };
+    const updatedSpecs = specs.filter((_, i) => i !== index)
+    setSpecs(updatedSpecs)
+  }
 
   const removeOptionValue = (index) => {
-    const updatedOptions = options.filter((_, i) => i !== index);
-    setOptions(updatedOptions);
-  };
+    const updatedOptions = options.filter((_, i) => i !== index)
+    setOptions(updatedOptions)
+  }
 
   // Update value in specs or options
   const handleSpecChange = (index, event) => {
-    const updatedSpecs = [...specs];
-    updatedSpecs[index] = event.target.value;
-    setSpecs(updatedSpecs);
-  };
+    const updatedSpecs = [...specs]
+    updatedSpecs[index] = event.target.value
+    setSpecs(updatedSpecs)
+  }
 
   const handleOptionChange = (index, event) => {
-    const updatedOptions = [...options];
-    updatedOptions[index] = event.target.value;
-    setOptions(updatedOptions);
-  };
+    const updatedOptions = [...options]
+    updatedOptions[index] = event.target.value
+    setOptions(updatedOptions)
+  }
 
   const onSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     //Check if already + put at least 1 specs and options
     if (specs.length === 0 && options.length === 0) {
-      alert("Please select a spec and options");
-      return;
+      alert('Please select a spec and options')
+      return
     }
     // Check if there are empty fields in specs or options
     if (specs.some((spec) => !spec) || options.some((option) => !option)) {
-      alert("Please fill all specifications and options.");
-      return;
+      alert('Please fill all specifications and options.')
+      return
     }
 
     const result = await updateModels(id, {
@@ -101,15 +106,15 @@ function EditModel() {
       description: description,
       specs: specs,
       options: options,
-    });
+    })
 
     if (result.success) {
-      alert("Model updated successfully!");
-      navigate({ to: `/models` });
+      alert('Model updated successfully!')
+      navigate({ to: `/models` })
     } else {
-      alert("Failed to update model.");
+      alert('Failed to update model.')
     }
-  };
+  }
 
   return (
     <Row className="mt-5">
@@ -264,7 +269,7 @@ function EditModel() {
         </Card>
       </Col>
     </Row>
-  );
+  )
 }
 
-export default EditModel;
+export default EditModel

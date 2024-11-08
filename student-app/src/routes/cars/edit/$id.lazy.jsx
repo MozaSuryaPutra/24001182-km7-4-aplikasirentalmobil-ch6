@@ -5,48 +5,56 @@ import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import Image from "react-bootstrap/Image";
+import Image from 'react-bootstrap/Image'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { getModels } from '../../../service/models'
 import { getCarsById, updateCars } from '../../../service/cars'
+import Protected from '../../../components/Auth/Protected'
 
 export const Route = createLazyFileRoute('/cars/edit/$id')({
-  component: EditCars,
+  component: () => (
+    <Protected roles={[1]}>
+      <EditCars />
+    </Protected>
+  ),
 })
 
 function EditCars() {
   const navigate = useNavigate()
   const { id } = Route.useParams()
-  const [plate, setPlate] = useState("");
-  const [rentPerDay, setRentPerDay] = useState("");
-  const [year, setYear] = useState("");
-  const [availableAt, setAvailableAt] = useState("");
-  const [available, setAvailable] = useState(true);
-  const [image, setImage] = useState(undefined); // Make sure to initialize image as null
-  const [currentImage, setCurrentImage] = useState(""); // Initialize as null
-  const [models, setModels] = useState([]);
-  const [modelsId, setModelsId] = useState(0);
-
+  const [plate, setPlate] = useState('')
+  const [rentPerDay, setRentPerDay] = useState('')
+  const [year, setYear] = useState('')
+  const [availableAt, setAvailableAt] = useState('')
+  const [available, setAvailable] = useState(true)
+  const [image, setImage] = useState(undefined) // Make sure to initialize image as null
+  const [currentImage, setCurrentImage] = useState('') // Initialize as null
+  const [models, setModels] = useState([])
+  const [modelsId, setModelsId] = useState(0)
 
   useEffect(() => {
     // Fetch model data to edit
     const fetchCarsData = async () => {
-        const result = await getCarsById(id);
-        if (!result?.success) {
-          navigate({ to: "/cars" });
-        }
-        if (result?.success) {
-            setPlate(result.data.plate)
-            setRentPerDay(result.data.rentPerDay)
-            setYear(result.data.year)
-            setAvailableAt(new Date(result.data.availableAt).toISOString().split('T')[0]); // Format date
-            setAvailable(result.data.available)
-            setImage(result.data.image)
-            setCurrentImage(result.data.image || ""); 
-            setModels(result.data.models)
-            setModelsId(result.data.modelsId)
-        }
+      const result = await getCarsById(id)
+      if (!result?.success) {
+        navigate({ to: '/cars' })
+      }
+      if (result?.success) {
+        setPlate(result.data.plate)
+        setRentPerDay(result.data.rentPerDay)
+        setYear(result.data.year)
+        setAvailableAt(
+          new Date(result.data.availableAt).toISOString().split('T')[0],
+        ) // Format date
+        setAvailable(result.data.available)
+        setImage(result.data.image)
+        setCurrentImage(result.data.image || '')
+        setModels(result.data.models)
+        setModelsId(result.data.modelsId)
+      }
       console.log(result)
-    };
+    }
 
     // Fetch types for dropdown selection
     const getModelsData = async () => {
@@ -63,21 +71,21 @@ function EditCars() {
     event.preventDefault()
 
     const result = await updateCars(id, {
-        plate,
-        carsmodels_id: modelsId,
-        rentPerDay: rentPerDay,
-        availableAt: availableAt,
-        year: year,
-        image: image,
-    });
-  
-      if (result.success) {
-        alert("Cars updated successfully!");
-        navigate({ to: `/cars` });
-      } else {
-        alert("Failed to update cars.");
-      }
-    };
+      plate,
+      carsmodels_id: modelsId,
+      rentPerDay: rentPerDay,
+      availableAt: availableAt,
+      year: year,
+      image: image,
+    })
+
+    if (result.success) {
+      toast.success('Cars updated successfully!')
+      navigate({ to: `/cars` })
+    } else {
+      toast.error('Failed to update cars.')
+    }
+  }
 
   return (
     <Row className="mt-5">
@@ -115,7 +123,8 @@ function EditCars() {
                     <option disabled value="">
                       Select Model
                     </option>
-                    {models && models.length > 0 &&
+                    {models &&
+                      models.length > 0 &&
                       models.map((c) => (
                         <option key={c.id} value={c.id}>
                           {c.model_name}
@@ -164,10 +173,10 @@ function EditCars() {
                     type="file"
                     placeholder="Choose File"
                     onChange={(event) => {
-                      setImage(event.target.files[0]);
+                      setImage(event.target.files[0])
                       setCurrentImage(
-                        URL.createObjectURL(event.target.files[0])
-                      );
+                        URL.createObjectURL(event.target.files[0]),
+                      )
                     }}
                     accept=".jpg,.png"
                   />

@@ -1,28 +1,34 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { createType } from "../../service/carType";
-import { toast } from "react-toastify";
-export const Route = createLazyFileRoute("/types/create")({
-  component: CreateTypes,
-});
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import { createType } from '../../service/carType'
+import { toast } from 'react-toastify'
+import Protected from '../../../components/Auth/Protected'
+
+export const Route = createLazyFileRoute('/types/create')({
+  component: () => (
+    <Protected roles={[1]}>
+      <CreateTypes />
+    </Protected>
+  ),
+})
 
 function CreateTypes() {
-  const navigate = useNavigate();
-  const [body_style, setBodyStyle] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [fuel_type, setFuelType] = useState("");
+  const navigate = useNavigate()
+  const [body_style, setBodyStyle] = useState('')
+  const [capacity, setCapacity] = useState('')
+  const [fuel_type, setFuelType] = useState('')
 
   const onSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if (capacity <= 0) {
-      toast.error("Capacity harus lebih dari 0");
-      return;
+      toast.error('Capacity harus lebih dari 0')
+      return
     }
 
     // Call createStudent function with form data
@@ -30,15 +36,15 @@ function CreateTypes() {
       body_style: body_style,
       capacity: capacity,
       fuel_type: fuel_type,
-    });
+    })
 
     if (result.success) {
-      alert("Type created successfully!");
-      navigate({ to: `/types` });
+      alert('Type created successfully!')
+      navigate({ to: `/types` })
     } else {
-      alert("Failed to create student.");
+      alert('Failed to create student.')
     }
-  };
+  }
 
   return (
     <Row className="mt-5">
@@ -58,7 +64,7 @@ function CreateTypes() {
                     required
                     value={body_style}
                     onChange={(event) => {
-                      setBodyStyle(event.target.value);
+                      setBodyStyle(event.target.value)
                     }}
                   />
                 </Col>
@@ -74,7 +80,7 @@ function CreateTypes() {
                     required
                     value={capacity}
                     onChange={(event) => {
-                      setCapacity(event.target.value);
+                      setCapacity(event.target.value)
                     }}
                   />
                 </Col>
@@ -90,7 +96,7 @@ function CreateTypes() {
                     required
                     value={fuel_type}
                     onChange={(event) => {
-                      setFuelType(event.target.value);
+                      setFuelType(event.target.value)
                     }}
                   />
                 </Col>
@@ -107,5 +113,5 @@ function CreateTypes() {
       </Col>
       <Col md={3}></Col>
     </Row>
-  );
+  )
 }
