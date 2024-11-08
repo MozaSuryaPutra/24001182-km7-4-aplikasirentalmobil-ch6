@@ -48,6 +48,10 @@ const NavigationBar = () => {
     setExpanded(false); // Close the navbar collapse
   };
 
+  if (user === null) {
+    return null;
+  }
+
   return (
     <Navbar
       collapseOnSelect
@@ -61,7 +65,7 @@ const NavigationBar = () => {
         <Navbar.Brand
           as={Link}
           to="/"
-          style={{ fontWeight: "bold", color: "#0D28A6" }}
+          style={{ fontWeight: "bold", color: "#0D28A6", marginLeft: "25px" }}
         >
           Binar Car Rental
         </Navbar.Brand>
@@ -69,42 +73,31 @@ const NavigationBar = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto"></Nav>
           <Nav className="ms-auto">
-            {user ? (
-              <>
-                <Nav.Link as={Link} to="/profile" onClick={handleLinkClick}>
-                  <Image
-                    src={user?.profile_picture}
-                    fluid
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      display: "inline-block",
-                      overflow: "hidden",
-                      borderRadius: "50%",
-                      marginRight: "3px",
-                    }}
-                  />{" "}
-                  {user?.name}
-                </Nav.Link>
-                <Nav.Link
-                  onClick={(event) => {
-                    handleLinkClick(event);
-                    logout(event);
+            <>
+              <Nav.Link as={Link} to="/profile" onClick={handleLinkClick}>
+                <Image
+                  src={user?.profile_picture}
+                  fluid
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    display: "inline-block",
+                    overflow: "hidden",
+                    borderRadius: "50%",
+                    marginRight: "3px",
                   }}
-                >
-                  Logout
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link as={Link} to="/login" onClick={handleLinkClick}>
-                  Login
-                </Nav.Link>
-                <Nav.Link as={Link} to="/register" onClick={handleLinkClick}>
-                  Register
-                </Nav.Link>
-              </>
-            )}
+                />{" "}
+                {user?.name}
+              </Nav.Link>
+              <Nav.Link
+                onClick={(event) => {
+                  handleLinkClick(event);
+                  logout(event);
+                }}
+              >
+                Logout
+              </Nav.Link>
+            </>
 
             {/* Mobile Menu Dropdowns */}
             <Nav.Link
