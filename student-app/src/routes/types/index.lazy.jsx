@@ -1,36 +1,35 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-
+import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { getStudents } from "../service/student";
-// import StudentItem from "../../components/Student/StudentItem";
+import { getType } from "../../service/carType";
 
-export const Route = createLazyFileRoute("/")({
-  component: Index,
+import TypeTable from "../../components/TypeTable";
+
+export const Route = createLazyFileRoute("/types/")({
+  component: Types,
 });
 
-function Index() {
+function Types() {
   const { token } = useSelector((state) => state.auth);
 
-  const [students, setStudents] = useState([]);
+  const [car_types, setTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const getStudentData = async () => {
+    const getTypesData = async () => {
       setIsLoading(true);
-      const result = await getStudents();
+      const result = await getType();
       if (result.success) {
-        setStudents(result.data);
+        setTypes(result.data);
       }
       setIsLoading(false);
     };
 
     if (token) {
-      getStudentData();
+      getTypesData();
     }
   }, [token]);
 
@@ -57,13 +56,15 @@ function Index() {
   return (
     <Row className="mt-4">
       <h1>Selamat Datang Di Website Kelompok 4</h1>
-      {/* {students.length === 0 ? (
-        <h1>Student data is not found!</h1>
+      {car_types.length === 0 ? (
+        <h1>Types data is not found!</h1>
       ) : (
-        students.map((student) => (
-          <StudentItem student={student} key={student?.id} />
+        car_types.map((carType) => (
+
+          <TypeTable car_types={carType} key={carType?.id} />
+
         ))
-      )} */}
+      )}
     </Row>
   );
 }

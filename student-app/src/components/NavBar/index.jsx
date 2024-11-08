@@ -6,7 +6,9 @@ import Image from "react-bootstrap/Image";
 import { useEffect, useState } from "react"; // Add useState
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../../redux/slices/auth";
-import { profile } from "../../services/auth";
+
+import { profile } from "../../service/auth";
+
 import NavDropdown from "react-bootstrap/NavDropdown"; // Import NavDropdown
 
 const NavigationBar = () => {
@@ -109,11 +111,9 @@ const NavigationBar = () => {
               Dashboard
             </Nav.Link>
             <NavDropdown title="Cars" id="cars-dropdown" className="d-lg-none">
-              <NavDropdown.Item
-                as={Link}
-                to="/cars/list"
-                onClick={handleLinkClick}
-              >
+
+              <NavDropdown.Item as={Link} to="/cars/" onClick={handleLinkClick}>
+
                 List Cars
               </NavDropdown.Item>
               <NavDropdown.Item
@@ -131,7 +131,9 @@ const NavigationBar = () => {
             >
               <NavDropdown.Item
                 as={Link}
-                to="/models/list"
+
+                to="/models/"
+
                 onClick={handleLinkClick}
               >
                 List Models
@@ -151,7 +153,9 @@ const NavigationBar = () => {
             >
               <NavDropdown.Item
                 as={Link}
-                to="/types/list"
+
+                to="/types/"
+
                 onClick={handleLinkClick}
               >
                 List Types
