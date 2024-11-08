@@ -31,6 +31,11 @@ function CreateTypes() {
       return
     }
 
+    if (capacity <= 0) {
+      toast.error("Capacity harus lebih dari 0");
+      return;
+    }
+
     // Call createStudent function with form data
     const result = await createType({
       body_style: body_style,

@@ -49,6 +49,12 @@ function EditTypes() {
       return
     }
 
+    if (capacity <= 0) {
+      toast.error("Capacity harus lebih dari 0");
+      return;
+    }
+
+
     const result = await updateType(id, {
       body_style: body_style,
       capacity: capacity,
