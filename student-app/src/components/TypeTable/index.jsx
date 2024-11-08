@@ -5,7 +5,9 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+
 import { deleteType, getType } from "../../service/carType";
+
 
 const TableContainer = styled.div`
   max-width: 100%;
@@ -81,6 +83,7 @@ const EditButton = styled.button`
 `;
 
 const TypeTable = ({ car_types, setTypes }) => {
+
   const navigate = useNavigate();
 
   const onDelete = async (event) => {
@@ -97,12 +100,14 @@ const TypeTable = ({ car_types, setTypes }) => {
             if (result?.success) {
               toast.success("Data deleted successfully!");
 
+
               const refreshTypes = await getType();
               if (refreshTypes?.success) {
                 setTypes(refreshTypes.data);
               } else {
                 setTypes([]);
               }
+
 
               return;
             }
@@ -119,7 +124,9 @@ const TypeTable = ({ car_types, setTypes }) => {
   };
 
   const handleEdit = () => {
+
     navigate({ to: `/types/edit/${car_types.id}` });
+
   };
 
   return (
@@ -127,7 +134,9 @@ const TypeTable = ({ car_types, setTypes }) => {
       <StyledTable>
         <TableHead>
           <TableRow>
+
             <TableHeaderCell>Id</TableHeaderCell>
+
             <TableHeaderCell>Body Style</TableHeaderCell>
             <TableHeaderCell>Capacity</TableHeaderCell>
             <TableHeaderCell>Fuel Type</TableHeaderCell>
@@ -136,7 +145,9 @@ const TypeTable = ({ car_types, setTypes }) => {
         </TableHead>
         <tbody>
           <TableRow>
+
             <TableCell>{car_types.id}</TableCell>
+
             <TableCell>{car_types.body_style}</TableCell>
             <TableCell>{car_types.capacity} seats</TableCell>
             <TableCell>{car_types.fuel_type}</TableCell>
