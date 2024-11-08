@@ -119,7 +119,7 @@ const TypeTable = ({ car_types, setTypes }) => {
   };
 
   const handleEdit = () => {
-    navigate({ to: `/types/${car_types.id}` });
+    navigate({ to: `/types/edit/${car_types.id}` });
   };
 
   return (
