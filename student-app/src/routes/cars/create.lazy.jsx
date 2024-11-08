@@ -50,6 +50,21 @@ function CreateCars() {
       return;
     }
 
+    if (rentPerDay <= 0) {
+      toast.error("Rent Per Day harus lebih dari 0");
+      return;
+    }
+    const platePattern = /^[A-Z]{3}-\d{4}$/;
+    if (!platePattern.test(plate)) {
+      toast.error("Plate must be in the format 'ABC-1234'");
+      return;
+    }
+    if (year <= 1886 && year <= 0) {
+      toast.error("Year must more than 1886");
+      return;
+    }
+
+
     const request = {
       plate,
       rentPerDay: parseInt(rentPerDay, 10), // Ensure rentPerDay is an integer
