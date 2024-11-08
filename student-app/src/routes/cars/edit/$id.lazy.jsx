@@ -6,54 +6,75 @@ import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
-import { getModels } from '../../service/models'
-import { toast } from 'react-toastify'
-import { createCars } from '../../service/cars'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getModels } from '../../../service/models'
+import { getCarsById, updateCars } from '../../../service/cars'
 import Protected from '../../../components/Auth/Protected'
 
-export const Route = createLazyFileRoute('/cars/create')({
+export const Route = createLazyFileRoute('/cars/edit/$id')({
   component: () => (
     <Protected roles={[1]}>
-      <CreateCars />
+      <EditCars />
     </Protected>
   ),
 })
 
-function CreateCars() {
+function EditCars() {
   const navigate = useNavigate()
-
+  const { id } = Route.useParams()
   const [plate, setPlate] = useState('')
   const [rentPerDay, setRentPerDay] = useState('')
   const [year, setYear] = useState('')
   const [availableAt, setAvailableAt] = useState('')
   const [available, setAvailable] = useState(true)
-  const [image, setImage] = useState(null) // Make sure to initialize image as null
-  const [currentImage, setCurrentImage] = useState(null) // Initialize as null
+  const [image, setImage] = useState(undefined) // Make sure to initialize image as null
+  const [currentImage, setCurrentImage] = useState('') // Initialize as null
   const [models, setModels] = useState([])
   const [modelsId, setModelsId] = useState(0)
 
   useEffect(() => {
+    // Fetch model data to edit
+    const fetchCarsData = async () => {
+      const result = await getCarsById(id)
+      if (!result?.success) {
+        navigate({ to: '/cars' })
+      }
+      if (result?.success) {
+        setPlate(result.data.plate)
+        setRentPerDay(result.data.rentPerDay)
+        setYear(result.data.year)
+        setAvailableAt(
+          new Date(result.data.availableAt).toISOString().split('T')[0],
+        ) // Format date
+        setAvailable(result.data.available)
+        setImage(result.data.image)
+        setCurrentImage(result.data.image || '')
+        setModels(result.data.models)
+        setModelsId(result.data.modelsId)
+      }
+      console.log(result)
+    }
+
+    // Fetch types for dropdown selection
     const getModelsData = async () => {
       const result = await getModels()
       if (result?.success) {
         setModels(result?.data)
       }
     }
+    fetchCarsData()
     getModelsData()
-  }, [])
+  }, [id, navigate])
 
   const onSubmit = async (event) => {
     event.preventDefault()
+
     console.log('modelsId:', modelsId)
     console.log('rentPerDay:', rentPerDay)
     console.log('year:', year)
     console.log('plate:', plate)
     console.log('availableAt:', availableAt)
-
-    if (!modelsId || !rentPerDay || !year || !plate || !availableAt) {
-      toast.error('Please fill in all required fields!')
-      return
-    }
 
     if (rentPerDay <= 0) {
       toast.error('Rent Per Day harus lebih dari 0')
@@ -69,22 +90,7 @@ function CreateCars() {
       return
     }
 
-    if (rentPerDay <= 0) {
-      toast.error("Rent Per Day harus lebih dari 0");
-      return;
-    }
-    const platePattern = /^[A-Z]{3}-\d{4}$/;
-    if (!platePattern.test(plate)) {
-      toast.error("Plate must be in the format 'ABC-1234'");
-      return;
-    }
-    if (year <= 1886 && year <= 0) {
-      toast.error("Year must more than 1886");
-      return;
-    }
-
-
-    const request = {
+    const result = await updateCars(id, {
       plate,
       rentPerDay: parseInt(rentPerDay, 10), // Ensure rentPerDay is an integer
       year: parseInt(year, 10), // Ensure year is an integer
@@ -92,28 +98,23 @@ function CreateCars() {
       available,
       carsmodels_id: modelsId,
       image: image ? image : null, // If no image, set to null
+    })
+
+    if (result.success) {
+      toast.success('Cars updated successfully!')
+      navigate({ to: `/cars` })
+    } else {
+      toast.error('Failed to update cars.')
     }
-
-    console.log(request) // Debug to see the values
-
-    const carResult = await createCars(request)
-
-    if (carResult?.success) {
-      navigate({ to: '/cars' })
-      return
-    }
-
-    toast.error(carResult?.message || 'Terjadi kesalahan!')
   }
 
   return (
     <Row className="mt-5">
       <Col className="offset-md-3">
         <Card>
-          <Card.Header className="text-center">Create Car</Card.Header>
+          <Card.Header className="text-center">Edit Cars</Card.Header>
           <Card.Body>
             <Form onSubmit={onSubmit}>
-              {/* Plate Field */}
               <Form.Group as={Row} className="mb-3" controlId="plate">
                 <Form.Label column sm={3}>
                   Plate
@@ -121,39 +122,39 @@ function CreateCars() {
                 <Col sm="9">
                   <Form.Control
                     type="text"
-                    placeholder="Plate (e.g., ABC-1234)"
+                    placeholder="Plate Numbers"
                     required
                     value={plate}
-                    onChange={(event) => setPlate(event.target.value)}
+                    onChange={(e) => setPlate(e.target.value)}
                   />
                 </Col>
               </Form.Group>
 
-              {/* Car Model */}
-              <Form.Group as={Row} className="mb-3" controlId="model">
+              <Form.Group as={Row} className="mb-3" controlId="modelName">
                 <Form.Label column sm={3}>
-                  Car Model
+                  Model Name
                 </Form.Label>
                 <Col sm="9">
                   <Form.Select
-                    onChange={(event) => {
-                      setModelsId(Number(event.target.value))
-                    }}
+                    aria-label="Select Type"
                     required
+                    value={modelsId}
+                    onChange={(event) => setModelsId(event.target.value)}
                   >
-                    <option disabled selected value="">
+                    <option disabled value="">
                       Select Car Model
                     </option>
-                    {models.map((model) => (
-                      <option key={model.id} value={model.id}>
-                        {model.model_name}
-                      </option>
-                    ))}
+                    {models &&
+                      models.length > 0 &&
+                      models.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.model_name}
+                        </option>
+                      ))}
                   </Form.Select>
                 </Col>
               </Form.Group>
 
-              {/* Available Field */}
               <Form.Group as={Row} className="mb-3" controlId="available">
                 <Form.Label column sm={3}>
                   Available
@@ -204,29 +205,29 @@ function CreateCars() {
                 </Col>
               </Form.Group>
 
-              {/* Available At Field */}
               <Form.Group as={Row} className="mb-3" controlId="availableAt">
                 <Form.Label column sm={3}>
-                  Available At
+                  Available Date
                 </Form.Label>
                 <Col sm="9">
                   <Form.Control
                     type="date"
+                    placeholder="Available Date"
                     required
                     value={availableAt}
-                    onChange={(event) => setAvailableAt(event.target.value)}
+                    onChange={(e) => setAvailableAt(e.target.value)}
                   />
                 </Col>
               </Form.Group>
 
-              {/* Car Image Field */}
-              <Form.Group as={Row} className="mb-3" controlId="image">
+              <Form.Group as={Row} className="mb-3" controlId="Image">
                 <Form.Label column sm={3}>
                   Car Image
                 </Form.Label>
-                <Col sm="9">
+                <Col sm={9}>
                   <Form.Control
                     type="file"
+                    placeholder="Choose File"
                     onChange={(event) => {
                       setImage(event.target.files[0])
                       setCurrentImage(
@@ -237,29 +238,24 @@ function CreateCars() {
                   />
                 </Col>
               </Form.Group>
-
-              {/* Display Image Preview */}
-              {currentImage && (
-                <Form.Group as={Row} className="mb-3">
-                  <Form.Label column sm={3}></Form.Label>
-                  <Col sm={9}>
-                    <Image src={currentImage} fluid />
-                  </Col>
-                </Form.Group>
-              )}
+              <Form.Group as={Row} className="mb-3" controlId="currentImage">
+                <Form.Label column sm={3}></Form.Label>
+                <Col sm={9}>
+                  <Image src={currentImage} fluid />
+                </Col>
+              </Form.Group>
 
               <div className="d-grid gap-2">
                 <Button type="submit" variant="primary">
-                  Create Car
+                  Update Cars
                 </Button>
               </div>
             </Form>
           </Card.Body>
         </Card>
       </Col>
-      <Col md={3}></Col>
     </Row>
   )
 }
 
-export default CreateCars
+export default EditCars

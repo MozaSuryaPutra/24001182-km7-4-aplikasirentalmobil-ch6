@@ -39,6 +39,7 @@ export const createCars = async (request) => {
   formData.append("carsmodels_id", request.carsmodels_id);
   formData.append("rentPerDay", request.rentPerDay);
   formData.append("availableAt", request.availableAt);
+  formData.append("available", request.available);
   formData.append("year", request.year);
   formData.append("image", request.image);
   formData.append("available", request.available);
@@ -62,8 +63,9 @@ export const updateCars = async (id, request) => {
   formData.append("carsmodels_id", request.carsmodels_id);
   formData.append("rentPerDay", request.rentPerDay);
   formData.append("availableAt", request.availableAt);
+  formData.append("available", request.available);
   formData.append("year", request.year);
-  if (request.profile_picture) {
+  if (request.image) {
     formData.append("image", request.image);
   }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Container from "react-bootstrap/Container";
 import { ToastContainer } from "react-toastify";
