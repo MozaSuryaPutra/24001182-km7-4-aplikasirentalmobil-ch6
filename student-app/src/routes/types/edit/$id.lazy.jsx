@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import { getTypeById, updateType } from "../../../service/carType";
-
+import { toast } from "react-toastify";
 export const Route = createLazyFileRoute("/types/edit/$id")({
   component: EditTypes,
 });
@@ -37,6 +37,10 @@ function EditTypes() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (capacity <= 0) {
+      toast.error("Capacity harus lebih dari 0");
+      return;
+    }
 
     const result = await updateType(id, {
       body_style: body_style,
@@ -81,7 +85,7 @@ function EditTypes() {
                 </Form.Label>
                 <Col sm="9">
                   <Form.Control
-                    type="text"
+                    type="number"
                     placeholder="Capacity"
                     required
                     value={capacity}
