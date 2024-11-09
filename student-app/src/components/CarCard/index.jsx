@@ -1,12 +1,10 @@
 import React from "react";
 import { format } from "date-fns";
 import styled from "styled-components";
-import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { toast } from "react-toastify";
-import { confirmAlert } from "react-confirm-alert";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "@tanstack/react-router";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { deleteCars, getCars } from "../../service/cars";
+import { useSelector } from "react-redux";
 
 const CardContainer = styled.div`
   max-width: 300px;
@@ -49,75 +47,9 @@ const CardText = styled.p`
   color: #555;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-`;
-
-const DeleteButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #dc3545;
-  background-color: #fff;
-  color: #dc3545;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
-const EditButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
 const CarCard = ({ cars, setCars }) => {
   const navigate = useNavigate();
-
-  const onDelete = async () => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure to delete this car?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: async () => {
-            const result = await deleteCars(cars.id);
-            if (result?.success) {
-              toast.success("Car deleted successfully!");
-
-              const refreshData = await getCars();
-              if (refreshData?.success) {
-                setCars(refreshData.data);
-              } else {
-                setCars([]);
-              }
-            } else {
-              toast.error(result?.message);
-            }
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-    });
-  };
-
-  const handleEdit = () => {
-    navigate({ to: `/cars/edit/${cars.id}` });
-  };
+  const { user } = useSelector((state) => state.auth);
 
   // Format tanggal menggunakan date-fns
   const formattedAvailableAt = cars.availableAt
@@ -125,7 +57,7 @@ const CarCard = ({ cars, setCars }) => {
     : "Not Available";
 
   return (
-    <CardContainer>
+    <CardContainer className="ms-lg-5 ">
       <ImageContainer>
         <CarImage src={cars.image} />
       </ImageContainer>
@@ -138,16 +70,14 @@ const CarCard = ({ cars, setCars }) => {
         <CardText>Year: {cars.year}</CardText>
         <CardText>Plate: {cars.plate}</CardText>
 
-        <ButtonContainer>
-          <DeleteButton onClick={onDelete}>
-            <FaTrashAlt style={{ marginRight: "4px" }} />
-            Delete
-          </DeleteButton>
-          <EditButton onClick={handleEdit}>
-            <FaEdit style={{ marginRight: "4px" }} />
-            Edit
-          </EditButton>
-        </ButtonContainer>
+        <Button
+          onClick={() => {
+            navigate({ to: `/cars/${cars.id}` });
+          }}
+          variant="primary"
+        >
+          Detail Car
+        </Button>
       </CardBody>
     </CardContainer>
   );

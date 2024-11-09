@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { deleteModels, getModels } from "../../service/models";
+import { useSelector } from "react-redux";
 
 const TableContainer = styled.div`
   max-width: 100%;
@@ -13,17 +14,32 @@ const TableContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  overflow-x: auto;
+
+   @media (max-width: 768px) {
+    border-radius: 0px;
 `;
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller font size on mobile */
+    padding: 8px;
+  }
 `;
 
 const TableHead = styled.thead`
   background-color: #007bff;
   color: #fff;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    font-size: 14px; /* Adjust header font size for mobile */
+  }
 `;
 
 const TableRow = styled.tr`
@@ -38,6 +54,11 @@ const TableCell = styled.td`
   font-size: 14px;
   color: #495057;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 8px 10px; /* Less padding on mobile */
+    font-size: 12px; /* Smaller text on mobile */
+  }
 `;
 
 const TableHeaderCell = styled.th`
@@ -46,12 +67,22 @@ const TableHeaderCell = styled.th`
   font-size: 16px;
   color: #fff;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 14px; /* Smaller header font on mobile */
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 10px;
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+    align-items: center;
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -65,6 +96,11 @@ const DeleteButton = styled.button`
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller button font */
+    padding: 5px 10px; /* Reduced padding */
+  }
 `;
 
 const EditButton = styled.button`
@@ -78,14 +114,18 @@ const EditButton = styled.button`
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller button font */
+    padding: 5px 10px; /* Reduced padding */
+  }
 `;
 
 const ModelsTable = ({ carsModels, setCarsModels }) => {
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
-  const onDelete = async (event) => {
-    event.preventDefault();
-
+  const onDelete = async (id) => {
     confirmAlert({
       title: "Confirm to delete",
       message: "Are you sure to delete this data?",
@@ -93,13 +133,13 @@ const ModelsTable = ({ carsModels, setCarsModels }) => {
         {
           label: "Yes",
           onClick: async () => {
-            const result = await deleteModels(carsModels.id);
+            const result = await deleteModels(id);
             if (result?.success) {
               toast.success("Data deleted successfully!");
 
-              const refreshTypes = await getModels();
-              if (refreshTypes?.success) {
-                setCarsModels(refreshTypes.data);
+              const refreshModels = await getModels();
+              if (refreshModels?.success) {
+                setCarsModels(refreshModels.data);
               } else {
                 setCarsModels([]);
               }
@@ -118,8 +158,8 @@ const ModelsTable = ({ carsModels, setCarsModels }) => {
     });
   };
 
-  const handleEdit = () => {
-    navigate({ to: `/models/edit/${carsModels.id}` });
+  const handleEdit = (id) => {
+    navigate({ to: `/models/edit/${id}` });
   };
 
   return (
@@ -134,51 +174,55 @@ const ModelsTable = ({ carsModels, setCarsModels }) => {
             <TableHeaderCell>Description</TableHeaderCell>
             <TableHeaderCell>Specs</TableHeaderCell>
             <TableHeaderCell>Options</TableHeaderCell>
-            <TableHeaderCell>Actions</TableHeaderCell>
+            {user?.role_id === 1 && <TableHeaderCell>Actions</TableHeaderCell>}
           </TableRow>
         </TableHead>
         <tbody>
-          <TableRow>
-            <TableCell>{carsModels.model_name}</TableCell>
-            <TableCell>{carsModels.manufacturer} seats</TableCell>
-            <TableCell>{carsModels.transmission}</TableCell>
-            <TableCell>{carsModels.type_id}</TableCell>
-            <TableCell>{carsModels.description}</TableCell>
-            <TableCell>
-              {Array.isArray(carsModels.specs) ? (
-                <div style={{ textAlign: "left" }}>
-                  {carsModels.specs.map((spec, index) => (
-                    <div key={index}>- {spec}</div>
-                  ))}
-                </div>
-              ) : (
-                carsModels.specs
+          {carsModels.map((carModel) => (
+            <TableRow key={carModel.id}>
+              <TableCell>{carModel.model_name}</TableCell>
+              <TableCell>{carModel.manufacturer}</TableCell>
+              <TableCell>{carModel.transmission}</TableCell>
+              <TableCell>{carModel.type_id}</TableCell>
+              <TableCell>{carModel.description}</TableCell>
+              <TableCell>
+                {Array.isArray(carModel.specs) ? (
+                  <div style={{ textAlign: "left" }}>
+                    {carModel.specs.map((spec, index) => (
+                      <div key={index}>- {spec}</div>
+                    ))}
+                  </div>
+                ) : (
+                  carModel.specs
+                )}
+              </TableCell>
+              <TableCell>
+                {Array.isArray(carModel.options) ? (
+                  <div style={{ textAlign: "left" }}>
+                    {carModel.options.map((option, index) => (
+                      <div key={index}>- {option}</div>
+                    ))}
+                  </div>
+                ) : (
+                  carModel.options
+                )}
+              </TableCell>
+              {user?.role_id === 1 && (
+                <TableCell>
+                  <ButtonContainer>
+                    <DeleteButton onClick={() => onDelete(carModel.id)}>
+                      <FaTrashAlt style={{ marginRight: "4px" }} />
+                      Delete
+                    </DeleteButton>
+                    <EditButton onClick={() => handleEdit(carModel.id)}>
+                      <FaEdit style={{ marginRight: "4px" }} />
+                      Edit
+                    </EditButton>
+                  </ButtonContainer>
+                </TableCell>
               )}
-            </TableCell>
-            <TableCell>
-              {Array.isArray(carsModels.options) ? (
-                <div style={{ textAlign: "left" }}>
-                  {carsModels.options.map((option, index) => (
-                    <div key={index}>- {option}</div>
-                  ))}
-                </div>
-              ) : (
-                carsModels.options
-              )}
-            </TableCell>
-            <TableCell>
-              <ButtonContainer>
-                <DeleteButton onClick={onDelete}>
-                  <FaTrashAlt style={{ marginRight: "4px" }} />
-                  Delete
-                </DeleteButton>
-                <EditButton onClick={handleEdit}>
-                  <FaEdit style={{ marginRight: "4px" }} />
-                  Edit
-                </EditButton>
-              </ButtonContainer>
-            </TableCell>
-          </TableRow>
+            </TableRow>
+          ))}
         </tbody>
       </StyledTable>
     </TableContainer>

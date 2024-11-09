@@ -1,13 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-
+import { useSelector } from "react-redux";
 import { deleteType, getType } from "../../service/carType";
-
 
 const TableContainer = styled.div`
   max-width: 100%;
@@ -15,17 +14,31 @@ const TableContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0;
+
+   @media (max-width: 768px) {
+    border-radius: 0px;
 `;
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller font size on mobile */
+    padding: 8px;
+  }
 `;
 
 const TableHead = styled.thead`
   background-color: #007bff;
   color: #fff;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    font-size: 14px; /* Adjust header font size for mobile */
+  }
 `;
 
 const TableRow = styled.tr`
@@ -40,6 +53,11 @@ const TableCell = styled.td`
   font-size: 14px;
   color: #495057;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 8px 10px; /* Less padding on mobile */
+    font-size: 12px; /* Smaller text on mobile */
+  }
 `;
 
 const TableHeaderCell = styled.th`
@@ -48,12 +66,22 @@ const TableHeaderCell = styled.th`
   font-size: 16px;
   color: #fff;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 14px; /* Smaller header font on mobile */
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 10px;
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+    align-items: center;
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -67,6 +95,11 @@ const DeleteButton = styled.button`
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller button font */
+    padding: 5px 10px; /* Reduced padding */
+  }
 `;
 
 const EditButton = styled.button`
@@ -80,15 +113,18 @@ const EditButton = styled.button`
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px; /* Smaller button font */
+    padding: 5px 10px; /* Reduced padding */
+  }
 `;
 
 const TypeTable = ({ car_types, setTypes }) => {
-
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
-  const onDelete = async (event) => {
-    event.preventDefault();
-
+  const onDelete = async (id) => {
     confirmAlert({
       title: "Confirm to delete",
       message: "Are you sure to delete this data?",
@@ -96,10 +132,9 @@ const TypeTable = ({ car_types, setTypes }) => {
         {
           label: "Yes",
           onClick: async () => {
-            const result = await deleteType(car_types.id);
+            const result = await deleteType(id);
             if (result?.success) {
               toast.success("Data deleted successfully!");
-
 
               const refreshTypes = await getType();
               if (refreshTypes?.success) {
@@ -107,7 +142,6 @@ const TypeTable = ({ car_types, setTypes }) => {
               } else {
                 setTypes([]);
               }
-
 
               return;
             }
@@ -123,10 +157,8 @@ const TypeTable = ({ car_types, setTypes }) => {
     });
   };
 
-  const handleEdit = () => {
-
-    navigate({ to: `/types/edit/${car_types.id}` });
-
+  const handleEdit = (id) => {
+    navigate({ to: `/types/edit/${id}` });
   };
 
   return (
@@ -134,36 +166,36 @@ const TypeTable = ({ car_types, setTypes }) => {
       <StyledTable>
         <TableHead>
           <TableRow>
-
             <TableHeaderCell>Id</TableHeaderCell>
-
             <TableHeaderCell>Body Style</TableHeaderCell>
             <TableHeaderCell>Capacity</TableHeaderCell>
             <TableHeaderCell>Fuel Type</TableHeaderCell>
-            <TableHeaderCell>Actions</TableHeaderCell>
+            {user?.role_id === 1 && <TableHeaderCell>Actions</TableHeaderCell>}
           </TableRow>
         </TableHead>
         <tbody>
-          <TableRow>
-
-            <TableCell>{car_types.id}</TableCell>
-
-            <TableCell>{car_types.body_style}</TableCell>
-            <TableCell>{car_types.capacity} seats</TableCell>
-            <TableCell>{car_types.fuel_type}</TableCell>
-            <TableCell>
-              <ButtonContainer>
-                <DeleteButton onClick={onDelete}>
-                  <FaTrashAlt style={{ marginRight: "4px" }} />
-                  Delete
-                </DeleteButton>
-                <EditButton onClick={handleEdit}>
-                  <FaEdit style={{ marginRight: "4px" }} />
-                  Edit
-                </EditButton>
-              </ButtonContainer>
-            </TableCell>
-          </TableRow>
+          {car_types.map((carType) => (
+            <TableRow key={carType.id}>
+              <TableCell>{carType.id}</TableCell>
+              <TableCell>{carType.body_style}</TableCell>
+              <TableCell>{carType.capacity} seats</TableCell>
+              <TableCell>{carType.fuel_type}</TableCell>
+              {user?.role_id === 1 && (
+                <TableCell>
+                  <ButtonContainer>
+                    <DeleteButton onClick={() => onDelete(carType.id)}>
+                      <FaTrashAlt style={{ marginRight: "4px" }} />
+                      Delete
+                    </DeleteButton>
+                    <EditButton onClick={() => handleEdit(carType.id)}>
+                      <FaEdit style={{ marginRight: "4px" }} />
+                      Edit
+                    </EditButton>
+                  </ButtonContainer>
+                </TableCell>
+              )}
+            </TableRow>
+          ))}
         </tbody>
       </StyledTable>
     </TableContainer>

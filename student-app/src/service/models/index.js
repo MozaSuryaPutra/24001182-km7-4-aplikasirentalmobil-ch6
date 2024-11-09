@@ -60,8 +60,9 @@ export const updateModels = async (id, request) => {
   const formData = new FormData();
   formData.append("model_name", request.model_name);
   formData.append("manufacturer", request.manufacturer);
-  formData.append("transmission", request.description);
+  formData.append("transmission", request.transmission);
   formData.append("type_id", request.type_id);
+  formData.append("description", request.description);
   formData.append("specs", request.specs);
   formData.append("options", request.options);
 

@@ -5,38 +5,28 @@ import Container from "react-bootstrap/Container";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import NavigationBar from "../components/NavBar";
-import Sidebar from "../components/SideBar";
- 
+import NavigationBar from "../components/NavBar/index.jsx";
+import Sidebar from "../components/SideBar/index.jsx";
+
 export const Route = createRootRoute({
-  component: () => {
-    const location = useLocation();
-    const currentPath = location.pathname;
+  component: () => (
+    <>
+      {/* Sidebar */}
+      <Sidebar />
 
-    // Conditionally show nav and sidebar on all routes except login and register
-    const showNavAndSidebar = currentPath !== "/login" && currentPath !== "/register";
+      {/* Navbar */}
+      <NavigationBar />
 
-    return (
-      <>
-        {/* Conditionally render Navbar and Sidebar */}
-        {showNavAndSidebar && <NavigationBar />}
-        {showNavAndSidebar && <Sidebar />}
+      <Container>
+        {/* Outlet is to detect the pathname or url and then render the component by pathname or url */}
+        <Outlet />
+      </Container>
 
-        {/* Wrap in Container only if not an auth page */}
-        {showNavAndSidebar ? (
-          <Container>
-            <Outlet />
-          </Container>
-        ) : (
-          <Outlet />
-        )}
+      {/* This is for debugging router */}
+      <TanStackRouterDevtools />
 
-        {/* This is for debugging router */}
-        <TanStackRouterDevtools />
-
-        {/* React Toastify */}
-        <ToastContainer theme="colored" />
-      </>
-    )
-  },
+      {/* React Toastify */}
+      <ToastContainer theme="colored" />
+    </>
+  ),
 });
