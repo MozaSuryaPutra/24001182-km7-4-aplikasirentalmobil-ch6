@@ -1,9 +1,7 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-
-import { useState } from "react";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -11,22 +9,19 @@ export const Route = createLazyFileRoute("/")({
 
 function Index() {
   const { token } = useSelector((state) => state.auth);
-
+  const navigate = useNavigate();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!token) {
-    return (
-      <Row className="mt-4">
-        <Col>
-          <h1 className="text-center">
-            Please login first to access the website!
-          </h1>
-        </Col>
-      </Row>
-    );
-  }
+  useEffect(() => {
+    if (!token) {
+      navigate({ to: "/login" });
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [token, navigate]);
 
-  if (isLoading) {
+  if (isCheckingAuth || isLoading) {
     return (
       <Row className="mt-4">
         <h1>Loading...</h1>

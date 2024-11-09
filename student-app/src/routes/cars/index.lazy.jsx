@@ -34,15 +34,8 @@ function CarsIndex() {
   }, [token]);
 
   if (!token) {
-    return (
-      <Row className="mt-4">
-        <Col>
-          <h1 className="text-center">
-            Please login first to get student data!
-          </h1>
-        </Col>
-      </Row>
-    );
+    navigate({ to: "/login" });
+    return;
   }
 
   if (isLoading) {
