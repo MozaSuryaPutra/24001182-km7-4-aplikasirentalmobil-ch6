@@ -84,9 +84,12 @@ function Register() {
                   />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="email">
+
+
                   <Form.Label className="mb-2">
                     Email (Jika Validation Failed berarti Ada email yang sama)
                   </Form.Label>
+
                   <Form.Control
                     type="email"
                     placeholder="Email"
