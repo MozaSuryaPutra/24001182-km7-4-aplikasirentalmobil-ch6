@@ -1,41 +1,42 @@
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import Button from 'react-bootstrap/Button'
-import Container from 'react-bootstrap/Container'
-import Col from 'react-bootstrap/Col'
-import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
-import { register } from '../service/auth'
-import { useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import { register } from "../service/auth";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
-export const Route = createLazyFileRoute('/register')({
+export const Route = createLazyFileRoute("/register")({
   component: Register,
-})
+});
 
 function Register() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { token } = useSelector((state) => state.auth)
+  const { token } = useSelector((state) => state.auth);
 
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [profilePicture, setProfilePicture] = useState(undefined)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [profilePicture, setProfilePicture] = useState(undefined);
 
   useEffect(() => {
     // get token from local storage
     if (token) {
-      navigate({ to: '/' })
+      navigate({ to: "/" });
     }
-  }, [token, navigate])
+  }, [token, navigate]);
 
   const onSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     if (password != confirmPassword) {
-      alert('Password and password confirmation must be same!')
+      toast.error("Password and password confirmation must be same!");
+      return;
     }
 
     // hit API here
@@ -44,28 +45,28 @@ function Register() {
       email,
       password,
       profilePicture,
-    }
-    const result = await register(request)
+    };
+    const result = await register(request);
     if (result.success) {
       // save token to local storage
-      localStorage.setItem('token', result.data.token)
+      localStorage.setItem("token", result.data.token);
 
       // redirect to home
-      window.location = '/'
+      window.location = "/";
 
-      return
+      return;
     }
 
-    toast.error(result?.message)
-  }
+    toast.error(result?.message);
+  };
 
   return (
     <>
-      <Row style={{ overflow: 'hidden', height: '100vh', width: '100vw' }}>
+      <Row style={{ overflow: "hidden", height: "100vh", width: "100vw" }}>
         <Col md={6}>
           <Container
             className="px-5 d-flex justify-content-center align-items-center"
-            style={{ minHeight: '100vh' }}
+            style={{ minHeight: "100vh" }}
           >
             <div className="w-100 m-lg-5 m-0">
               <h2 className="mb-4">Register</h2>
@@ -78,7 +79,7 @@ function Register() {
                     required
                     value={name}
                     onChange={(event) => {
-                      setName(event.target.value)
+                      setName(event.target.value);
                     }}
                   />
                 </Form.Group>
@@ -90,7 +91,7 @@ function Register() {
                     required
                     value={email}
                     onChange={(event) => {
-                      setEmail(event.target.value)
+                      setEmail(event.target.value);
                     }}
                   />
                 </Form.Group>
@@ -102,11 +103,15 @@ function Register() {
                     required
                     value={password}
                     onChange={(event) => {
-                      setPassword(event.target.value)
+                      setPassword(event.target.value);
                     }}
                   />
                 </Form.Group>
-                <Form.Group as={Col} className="mb-2" controlId="confirmPassword">
+                <Form.Group
+                  as={Col}
+                  className="mb-2"
+                  controlId="confirmPassword"
+                >
                   <Form.Label className="mb-2">Confirm Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -114,18 +119,22 @@ function Register() {
                     required
                     value={confirmPassword}
                     onChange={(event) => {
-                      setConfirmPassword(event.target.value)
+                      setConfirmPassword(event.target.value);
                     }}
                   />
                 </Form.Group>
-                <Form.Group as={Col} className="mb-4" controlId="profilePicture">
+                <Form.Group
+                  as={Col}
+                  className="mb-4"
+                  controlId="profilePicture"
+                >
                   <Form.Label className="mb-2">Profile Picture</Form.Label>
                   <Form.Control
                     type="file"
                     placeholder="Choose File"
                     required
                     onChange={(event) => {
-                      setProfilePicture(event.target.files[0])
+                      setProfilePicture(event.target.files[0]);
                     }}
                     accept=".jpg,.png"
                   />
@@ -134,8 +143,8 @@ function Register() {
                   <Button
                     type="submit"
                     style={{
-                      backgroundColor: '#0D28A6',
-                      borderColor: '#0D28A6',
+                      backgroundColor: "#0D28A6",
+                      borderColor: "#0D28A6",
                     }}
                     className="rounded-0"
                   >
@@ -151,17 +160,17 @@ function Register() {
         </Col>
         <Col
           md={6}
-          style={{ overflow: 'hidden', height: '100vh', position: 'relative' }}
+          style={{ overflow: "hidden", height: "100vh", position: "relative" }}
           className="d-none d-md-block"
         >
           <img
             src="/login-page.png"
             alt="Login Page"
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              position: 'absolute',
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              position: "absolute",
               top: 0,
               left: 0,
             }}
@@ -169,5 +178,5 @@ function Register() {
         </Col>
       </Row>
     </>
-  )
+  );
 }

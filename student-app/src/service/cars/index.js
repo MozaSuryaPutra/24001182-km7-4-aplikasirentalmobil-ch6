@@ -42,7 +42,6 @@ export const createCars = async (request) => {
   formData.append("available", request.available);
   formData.append("year", request.year);
   formData.append("image", request.image);
-  formData.append("available", request.available);
 
   const response = await fetch(`${import.meta.env.VITE_API_URL}/cars`, {
     headers: {

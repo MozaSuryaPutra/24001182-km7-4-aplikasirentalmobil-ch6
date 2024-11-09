@@ -1,14 +1,10 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
 import { useSelector } from "react-redux";
 import { getCars } from "../../service/cars";
-import { getModelsById } from "../../service/models";
 import CarCard from "../../components/CarCard";
 export const Route = createLazyFileRoute("/cars/")({
   component: CarsIndex,
@@ -16,9 +12,11 @@ export const Route = createLazyFileRoute("/cars/")({
 
 function CarsIndex() {
   const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const [cars, setCars] = useState([]);
   const [models, setCarsModelsByid] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCarsData = async () => {
@@ -56,15 +54,33 @@ function CarsIndex() {
   }
 
   return (
-    <Row className="mt-4">
-      <h1>Selamat Datang Di Website Kelompok 4</h1>
-      {cars.length === 0 ? (
-        <h1>Cars is not found!</h1>
-      ) : (
-        cars.map((car) => (
-          <CarCard setCars={setCars} cars={car} key={car?.id} />
-        ))
-      )}
-    </Row>
+    <div>
+      <Row className="mt-4 align-items-center">
+        <h1>Cars List:</h1>
+        {user?.role_id === 1 && (
+          <Button
+            className="me-2"
+            style={{ width: "150px", marginLeft: "auto" }}
+            onClick={() => {
+              navigate({ to: "/cars/create" });
+            }}
+          >
+            Create New Car
+          </Button>
+        )}
+      </Row>
+
+      <Row className="mt-4">
+        {cars.length === 0 ? (
+          <h1>Cars not found!</h1>
+        ) : (
+          cars.map((car) => (
+            <Col md={4} lg={3} key={car.id} className="ms-3 ms-lg-0">
+              <CarCard setCars={setCars} cars={car} />
+            </Col>
+          ))
+        )}
+      </Row>
+    </div>
   );
 }

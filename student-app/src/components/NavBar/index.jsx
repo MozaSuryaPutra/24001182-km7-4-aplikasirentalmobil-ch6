@@ -3,19 +3,16 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
-import { useEffect, useState } from "react"; // Add useState
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../../redux/slices/auth";
-
 import { profile } from "../../service/auth";
-
-import NavDropdown from "react-bootstrap/NavDropdown"; // Import NavDropdown
+import NavDropdown from "react-bootstrap/NavDropdown";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // State to control the collapse
   const [expanded, setExpanded] = useState(false);
 
   const { user, token } = useSelector((state) => state.auth);
@@ -45,9 +42,8 @@ const NavigationBar = () => {
     navigate({ to: "/login" });
   };
 
-  // Handle link clicks to close the collapse
   const handleLinkClick = () => {
-    setExpanded(false); // Close the navbar collapse
+    setExpanded(false);
   };
 
   if (user === null) {
@@ -60,8 +56,8 @@ const NavigationBar = () => {
       expand="lg"
       className="bg-body-tertiary"
       style={{ zIndex: 2 }}
-      expanded={expanded} // Set the expanded state
-      onToggle={(expanded) => setExpanded(expanded)} // Set the state when toggled
+      expanded={expanded}
+      onToggle={(expanded) => setExpanded(expanded)}
     >
       <Container>
         <Navbar.Brand
@@ -101,7 +97,6 @@ const NavigationBar = () => {
               </Nav.Link>
             </>
 
-            {/* Mobile Menu Dropdowns */}
             <Nav.Link
               as={Link}
               to="/"
@@ -110,64 +105,30 @@ const NavigationBar = () => {
             >
               Dashboard
             </Nav.Link>
-            <NavDropdown title="Cars" id="cars-dropdown" className="d-lg-none">
-
-              <NavDropdown.Item as={Link} to="/cars/" onClick={handleLinkClick}>
-
-                List Cars
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                as={Link}
-                to="/cars/add"
-                onClick={handleLinkClick}
-              >
-                Add New Car
-              </NavDropdown.Item>
-            </NavDropdown>
-            <NavDropdown
-              title="Models"
-              id="models-dropdown"
+            <Nav.Link
+              as={Link}
+              to="/cars/"
+              onClick={handleLinkClick}
               className="d-lg-none"
             >
-              <NavDropdown.Item
-                as={Link}
-
-                to="/models/"
-
-                onClick={handleLinkClick}
-              >
-                List Models
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                as={Link}
-                to="/models/add"
-                onClick={handleLinkClick}
-              >
-                Add New Model
-              </NavDropdown.Item>
-            </NavDropdown>
-            <NavDropdown
-              title="Types"
-              id="types-dropdown"
+              Cars
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/models/"
+              onClick={handleLinkClick}
               className="d-lg-none"
             >
-              <NavDropdown.Item
-                as={Link}
-
-                to="/types/"
-
-                onClick={handleLinkClick}
-              >
-                List Types
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                as={Link}
-                to="/types/add"
-                onClick={handleLinkClick}
-              >
-                Add New Type
-              </NavDropdown.Item>
-            </NavDropdown>
+              Models
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/types"
+              onClick={handleLinkClick}
+              className="d-lg-none"
+            >
+              Types
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

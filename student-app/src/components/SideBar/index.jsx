@@ -6,54 +6,46 @@ import { useSelector } from "react-redux";
 const SideBar = () => {
   const location = useLocation();
 
-  // Access the token from Redux store
-  const token = useSelector((state) => state.auth.token); // Adjust the path based on your store
-
+  const token = useSelector((state) => state.auth.token);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check for mobile screen size
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust for your mobile breakpoint
+      setIsMobile(window.innerWidth <= 768);
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Initialize state on first render
-
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Helper function to check if a link is active
   const isActive = (path) => location.pathname === path;
 
-  // If there is no token or it’s a mobile view, return null (don't render the sidebar)
   if (!token || isMobile) {
     return null;
   }
 
   return (
     <div style={{ display: "flex" }}>
-      {/* Main Sidebar */}
       <div
         style={{
-          background: "#0D28A6", // Sidebar background color
-          width: "80px", // Increased width for icons
+          background: "#0D28A6",
+          width: "80px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          position: "fixed", // Fixed positioning
-          height: "100vh", // Full height
-          color: "#fff", // Text color
+          position: "fixed",
+          height: "100vh",
+          color: "#fff",
           zIndex: "3",
         }}
       >
-        {/* White Square instead of "Main" text */}
         <div
           style={{
             backgroundColor: "#fff",
-            width: "30px", // Set the size of the square
-            height: "30px", // Set the size of the square
-            margin: "20px 0", // Margin to space out from the top
+            width: "30px",
+            height: "30px",
+            margin: "20px 0",
           }}
         ></div>
 
@@ -66,12 +58,12 @@ const SideBar = () => {
                 alignItems: "center",
                 flexDirection: "column",
                 padding: "10px 0",
-                color: isActive("/") ? "#0D28A6" : "#fff", // Active state color
-                backgroundColor: isActive("/") ? "#D9EFFF" : "transparent", // Active state background
+                color: isActive("/") ? "#0D28A6" : "#fff",
+                backgroundColor: isActive("/") ? "#D9EFFF" : "transparent",
                 borderRadius: "8px",
                 textAlign: "center",
                 width: "100%",
-                textDecoration: "none", // Remove underline
+                textDecoration: "none",
                 cursor: "pointer",
               }}
             >
@@ -87,12 +79,12 @@ const SideBar = () => {
                 alignItems: "center",
                 flexDirection: "column",
                 padding: "10px 0",
-                color: isActive("/cars") ? "#0D28A6" : "#fff", // Active state color
-                backgroundColor: isActive("/cars") ? "#D9EFFF" : "transparent", // Active state background
+                color: isActive("/cars") ? "#0D28A6" : "#fff",
+                backgroundColor: isActive("/cars") ? "#D9EFFF" : "transparent",
                 borderRadius: "8px",
                 textAlign: "center",
                 width: "100%",
-                textDecoration: "none", // Remove underline
+                textDecoration: "none",
                 cursor: "pointer",
               }}
             >
@@ -108,14 +100,14 @@ const SideBar = () => {
                 alignItems: "center",
                 flexDirection: "column",
                 padding: "10px 0",
-                color: isActive("/models") ? "#0D28A6" : "#fff", // Active state color
+                color: isActive("/models") ? "#0D28A6" : "#fff",
                 backgroundColor: isActive("/models")
                   ? "#D9EFFF"
-                  : "transparent", // Active state background
+                  : "transparent",
                 borderRadius: "8px",
                 textAlign: "center",
                 width: "100%",
-                textDecoration: "none", // Remove underline
+                textDecoration: "none",
                 cursor: "pointer",
               }}
             >
@@ -131,12 +123,12 @@ const SideBar = () => {
                 alignItems: "center",
                 flexDirection: "column",
                 padding: "10px 0",
-                color: isActive("/types") ? "#0D28A6" : "#fff", // Active state color
-                backgroundColor: isActive("/types") ? "#D9EFFF" : "transparent", // Active state background
+                color: isActive("/types") ? "#0D28A6" : "#fff",
+                backgroundColor: isActive("/types") ? "#D9EFFF" : "transparent",
                 borderRadius: "8px",
                 textAlign: "center",
                 width: "100%",
-                textDecoration: "none", // Remove underline
+                textDecoration: "none",
                 cursor: "pointer",
               }}
             >
