@@ -1,5 +1,5 @@
 import React from "react";
-import { format } from "date-fns";
+//import { format } from "date-fns";
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "@tanstack/react-router";
@@ -51,10 +51,10 @@ const CarCard = ({ cars, setCars }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  // Format tanggal menggunakan date-fns
-  const formattedAvailableAt = cars.availableAt
-    ? format(new Date(cars.availableAt), "yyyy-MM-dd")
-    : "Not Available";
+  // // Format tanggal menggunakan date-fns
+  // const formattedAvailableAt = cars.availableAt
+  //   ? format(new Date(cars.availableAt), "yyyy-MM-dd")
+  //   : "Not Available";
 
   return (
     <CardContainer className="ms-lg-5 ">
@@ -66,7 +66,7 @@ const CarCard = ({ cars, setCars }) => {
         <CardTitle>{cars.carsModels.model_name}</CardTitle>
 
         <CardText>RP {cars.rentPerDay}/Hari</CardText>
-        <CardText>Available At: {formattedAvailableAt}</CardText>
+        <CardText>Available At: {cars.availableAt}</CardText>
         <CardText>Year: {cars.year}</CardText>
         <CardText>Plate: {cars.plate}</CardText>
 
