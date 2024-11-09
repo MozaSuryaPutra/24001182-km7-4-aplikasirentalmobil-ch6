@@ -119,6 +119,7 @@ function CarDetail() {
               <Card.Text>AvailableAt{car?.availableAt}</Card.Text>
               <Card.Text>ID: {car?.id}</Card.Text>
 
+
               <Card.Text>Model Name: {car?.carsModels?.model_name}</Card.Text>
               <Card.Text>
                 Manufacturer: {car?.carsModels?.manufacturer}
@@ -127,13 +128,14 @@ function CarDetail() {
                 Transmission: {car?.carsModels?.transmission}
               </Card.Text>
 
+
               <Card.Text>Description: {car?.carsModels?.description}</Card.Text>
+
 
               <Card.Text>Specs: {car?.carsModels?.specs?.join(", ")}</Card.Text>
               <Card.Text>
                 Options: {car?.carsModels?.options?.join(", ")}
               </Card.Text>
-
               <Card.Text>
                 Body Style: {car?.carsModels?.car_types.body_style}
               </Card.Text>
