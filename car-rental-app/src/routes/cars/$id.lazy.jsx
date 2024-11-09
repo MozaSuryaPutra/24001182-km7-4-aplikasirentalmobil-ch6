@@ -130,7 +130,6 @@ function CarDetail() {
               <Card.Text>
                 Options: {car?.carsModels?.options?.join(", ")}
               </Card.Text>
-              <Card.Text>Type: </Card.Text>
               <Card.Text>
                 Body Style: {car?.carsModels?.car_types.body_style}
               </Card.Text>
